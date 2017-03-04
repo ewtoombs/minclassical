@@ -15,8 +15,8 @@ The basic code can be used on other radio stations on zoomermedia.ca, where
 New Classical is hosted.
 
 ### dependencies
-1. websockets
-1. python requests
+1. websockets (python module)
+1. requests (python module)
 1. mpv (easily exchangeable with other media players.)
 
  vi:fo=atw
