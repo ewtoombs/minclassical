@@ -1,0 +1,57 @@
+#!/usr/bin/env python
+
+
+def geturl():
+    """Connects to zoomermedia.ca to get the stream URL for a 
+    particular radio station it serves. Right now, the radio station is hard 
+    coded to Toronto's New Classical FM."""
+
+    import asyncio
+    import websockets
+    import requests
+    import json
+    import re
+
+    baseurl = 'http://nowplay.zoomermedia.ca/socket.io/?transport=polling'
+
+    # Start session.
+    response = requests.get(baseurl)
+    c = response.content[5:]
+    sid = json.loads(c)['sid']
+
+    # Request which station we want.
+    response = requests.post(baseurl + '&sid=' + sid,
+            data=b'77:42["action",{"type":"server/registerChannel","channel":"www.classicalfm.ca"}]')
+    assert response.content == b'ok'
+
+
+    # Get URL from websocket.
+    async def hello():
+        async with websockets.connect('ws://nowplay.zoomermedia.ca/socket.io/?'
+                'transport=websocket&sid='+sid) as ws:
+            global url
+            await ws.send('2probe')
+            await ws.recv()
+            await ws.send('5')
+
+            pattern = re.compile('(\d+)(.*)')
+            while True:
+                d = await ws.recv()
+                match = pattern.fullmatch(d)
+                status = int(match.group(1))
+                if status != 42:
+                    continue
+
+                j = json.loads(match.group(2))
+                action = j[1]
+                if action['type'] == 'client/streamData':
+                    return action['data']['stream']['urls'][0]
+
+    return asyncio.get_event_loop().run_until_complete(hello())
+
+
+import subprocess as sp
+from sys import *
+
+r = sp.call(['mpv', geturl()])
+exit(r)
