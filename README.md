@@ -32,7 +32,17 @@ Place the script in whichever binary directory you consider appropriate.
 ```
 $ git clone 'https://github.com/ewtoombs/minclassical.git'
 $ sudo install --mode=0755 minclassical/minclassical /usr/local/bin.
+$ minclassical
 ```
 
+### more words to read:
+But ewtoombs, why didn't you simply use Wireshark or Chrome Developer Tools to 
+capture the streaming URL, then save it in a playlist somewhere?
+
+Yes, that is my usual solution to bloated internet radio websites. Much to my 
+dismay, though, I discovered that the streaming URLs of this particular radio 
+station kept changing, because the IP address is hard coded into the streaming 
+URL and there are multiple, possibly-changing IP addresses.  Thus the only way 
+to connect reliably to this station was to make this script.
 
  vi:fo=atw
