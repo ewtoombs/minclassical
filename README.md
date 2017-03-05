@@ -15,8 +15,24 @@ The basic code can be used on other radio stations on zoomermedia.ca, where
 New Classical is hosted.
 
 ### dependencies
-1. websockets (python module)
-1. requests (python module)
+1. python 3
+1. python websockets
+1. python requests
 1. mpv (easily exchangeable with other media players.)
+
+### usage
+Just run it! :)
+```
+$ git clone 'https://github.com/ewtoombs/minclassical.git'
+$ python minclassical/minclassical
+```
+
+### install
+Place the script in whichever binary directory you consider appropriate.
+```
+$ git clone 'https://github.com/ewtoombs/minclassical.git'
+$ sudo install --mode=0755 minclassical/minclassical /usr/local/bin.
+```
+
 
  vi:fo=atw
