@@ -1,10 +1,9 @@
 #!/usr/bin/env python
 
 
-def geturl():
+def geturl(channel):
     """Connects to zoomermedia.ca to get the stream URL for a 
-    particular radio station it serves. Right now, the radio station is hard 
-    coded to Toronto's New Classical FM."""
+    particular radio station it serves."""
 
     import asyncio
     import websockets
@@ -12,24 +11,34 @@ def geturl():
     import json
     import re
 
-    baseurl = 'http://nowplay.zoomermedia.ca/socket.io/?transport=polling'
+    # The common piece shared between the websocket and HTTP URLs.
+    urlcommon = '://nowplay.zoomermedia.ca/socket.io/?transport='
 
     # Start session.
-    response = requests.get(baseurl)
+    basehttpurl = 'http'+urlcommon+'polling'
+    response = requests.get(basehttpurl)
     c = response.content[5:]
     sid = json.loads(c)['sid']
 
-    # Request which station we want.
-    response = requests.post(baseurl + '&sid=' + sid,
-            data=b'77:42["action",{"type":"server/registerChannel","channel":"www.classicalfm.ca"}]')
+    # Request which channel we want.
+    sessionurl = basehttpurl + '&sid=' + sid
+    requestj = [
+            'action',
+            {
+                'type': 'server/registerChannel',
+                'channel': channel
+            }
+        ]
+    request = '42' + json.dumps(requestj)
+    response = requests.post(sessionurl,
+            data='{}:{}'.format(len(request), request))
     assert response.content == b'ok'
 
 
     # Get URL from websocket.
     async def hello():
-        async with websockets.connect('ws://nowplay.zoomermedia.ca/socket.io/?'
-                'transport=websocket&sid='+sid) as ws:
-            global url
+        async with websockets.connect(
+                'ws'+urlcommon+'websocket&sid='+sid) as ws:
             await ws.send('2probe')
             await ws.recv()
             await ws.send('5')
@@ -53,5 +62,5 @@ def geturl():
 import subprocess as sp
 from sys import *
 
-r = sp.call(['mpv', geturl()])
+r = sp.call(['mpv', geturl('www.classicalfm.ca')])
 exit(r)
