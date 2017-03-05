@@ -41,8 +41,8 @@ capture the streaming URL, then save it in a playlist somewhere?
 
 Yes, that is my usual solution to bloated internet radio websites. Much to my 
 dismay, though, I discovered that the streaming URLs of this particular radio 
-station kept changing, because the IP address is hard coded into the streaming 
+station keep changing, because the IP address is hard coded into the streaming 
 URL and there are multiple, possibly-changing IP addresses.  Thus the only way 
-to connect reliably to this station was to make this script.
+to connect reliably to this station is through a script like this.
 
  vi:fo=atw
