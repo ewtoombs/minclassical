@@ -59,8 +59,7 @@ def geturl(channel):
     return asyncio.get_event_loop().run_until_complete(hello())
 
 
-import subprocess as sp
+import os
 from sys import *
 
-r = sp.call(['mpv', geturl('www.classicalfm.ca')])
-exit(r)
+os.execvp('mpv', ['mpv', geturl('www.classicalfm.ca')])
